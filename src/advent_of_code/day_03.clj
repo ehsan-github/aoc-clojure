@@ -6,14 +6,10 @@
 (defn incY [[x y]] [x (inc y)])
 (defn decY [[x y]] [x (dec y)])
 
-(incY [0 0])
-
 (def m {:R incX
         :L decX
         :U incY
         :D decY})
-
-(:R m)
 
 (defn nextRound
   [isSecond]
