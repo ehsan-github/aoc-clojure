@@ -1,7 +1,7 @@
 (ns advent-of-code.day-06
   (:require [clojure.string :as str]))
 
-(defn mmap [m f]
+(defn mmap [f m]
   (into {} (for [[k v] m] [k (f v)])))
 
 (defn create-tree [start l p obj]
@@ -21,7 +21,7 @@
        (#(str/split % #"\n"))
        (map #(str/split % #"\)"))
        (group-by first)
-       (#(mmap % (fn [x] {:children (map second x) :level nil})))
+       (mmap (fn [x] {:children (map second x) :level nil}))
        (create-tree "COM" 0 nil)))
 
 (defn part-1
@@ -29,7 +29,8 @@
   [input]
   (->> input
        common-part
-       (#(map (fn [{level :level}] level) (vals %)))
+       vals
+       (map :level)
        (reduce +)))
 
 (defn find-steps [s e steps obj]
