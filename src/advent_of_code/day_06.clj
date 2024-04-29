@@ -1,13 +1,8 @@
 (ns advent-of-code.day-06
   (:require [clojure.string :as str]))
 
-(defn addNode [acc [a b]]
-  (if (contains? acc a)
-    (let [v (get acc a)]
-      (if (fn? v)
-        (assoc acc b (fn [obj] (inc (v obj))))
-        (assoc acc b (inc v))))
-    (assoc acc b (fn [obj] (let [v (get obj a)] (if (fn? v) (inc (v obj)) (inc v)))))))
+(defn add-node [acc [a b]]
+  (assoc acc b (fn [obj] (let [v (get obj a)] (if (fn? v) (inc (v obj)) (inc v))))))
 
 (defn get-vals [obj] (map (fn [v] (if (fn? v) (v obj) v)) (vals obj)))
 
@@ -17,7 +12,7 @@
   (->> input
        (#(str/split % #"\n"))
        (map #(str/split % #"\)"))
-       (reduce addNode {"COM" 0})
+       (reduce add-node {"COM" 0})
        get-vals
        (reduce +)))
 
