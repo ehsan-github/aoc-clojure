@@ -1,8 +1,15 @@
 (ns advent-of-code.day-06
   (:require [clojure.string :as str]))
 
+
 (defn add-node [acc [a b]]
-  (assoc acc b (fn [obj] (let [v (get obj a)] (if (fn? v) (inc (v obj)) (inc v))))))
+  (assoc acc b (fn [obj]
+                 (let [v (get obj a)]
+                   (if (fn? v)
+                     (inc (v obj))
+                     (inc v))))))
+
+(def m-add-node (memoize add-node))
 
 (defn get-vals [obj] (map (fn [v] (if (fn? v) (v obj) v)) (vals obj)))
 
@@ -15,6 +22,8 @@
        (reduce add-node {"COM" 0})
        get-vals
        (reduce +)))
+
+(part-1 sample)
 
 (defn part-2
   "Day 06 Part 2"
