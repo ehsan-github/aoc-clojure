@@ -16,33 +16,27 @@
   (if (zero? b)
     a
     (recur b (mod a b))))
+(gcd 0 8)
 
 (defn between-two
   [[x1 y1] [x2 y2]]
-  (if (= x1 x2)
-    (for [i (range (inc y1) y2)] [x1 i])
-    (if (= y1 y2)
-      (for [i (range (inc x1) x2)] [i y1])
-      (let [x-diff (Math/abs (- x1 x2))
-            y-diff (- y2 y1)
-            gcd-num (gcd x-diff y-diff)
-            step-x (/ x-diff gcd-num)
-            step-y (/ y-diff gcd-num)]
-        (if (= 1 gcd-num) []
-            (for [s (range 1 gcd-num)]
-              (if (< x1 x2)
-                [(+ x1 (* s step-x)) (+ y1 (* s step-y))]
-                [(- x1 (* s step-x)) (+ y1 (* s step-y))])))))))
-
-(defn nothing-in-the-way?
-  [[x1 y1] [x2 y2] data]
-  (let [in-between (between-two [x1 y1] [x2 y2])]
-    (every? (fn [[x y]] (= -1 (nth (nth data y) x))) in-between)))
+  (let [x-diff (Math/abs (- x1 x2))
+        y-diff (- y2 y1)
+        gcd-num (gcd x-diff y-diff)
+        step-x (/ x-diff gcd-num)
+        step-y (/ y-diff gcd-num)]
+    (for [s (range 1 gcd-num)]
+      (if (< x1 x2)
+        [(+ x1 (* s step-x)) (+ y1 (* s step-y))]
+        [(- x1 (* s step-x)) (+ y1 (* s step-y))]))))
 
 (defn see-each-other?
   [[x1 y1] [x2 y2] data]
   (let [target (nth (nth data y2) x2)]
-    (if (= target -1) false (nothing-in-the-way? [x1 y1] [x2 y2] data))))
+    (if (= target -1)
+      false
+      (let [in-between (between-two [x1 y1] [x2 y2])]
+        (every? (fn [[x y]] (= -1 (nth (nth data y) x))) in-between)))))
 
 (defn compute-sight
   [acc [x y]] (let [char (nth (nth acc y) x)
